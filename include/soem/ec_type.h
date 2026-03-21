@@ -77,7 +77,7 @@ OSAL_PACKED_END
 /** ethernet header size */
 #define ETH_HEADERSIZE sizeof(ec_etherheadert)
 
-/** EtherCAT datagram header definition */
+/** cyokeo: EtherCAT datagram header definition */
 OSAL_PACKED_BEGIN
 typedef struct OSAL_PACKED
 {
@@ -193,7 +193,7 @@ typedef enum
    ECT_BIT8 = 0x0037
 } ec_datatype;
 
-/** Ethercat command types */
+/** cyokeo: Ethercat command types */
 typedef enum
 {
    /** No operation */

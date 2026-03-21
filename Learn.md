@@ -307,5 +307,45 @@ Received Ethernet Frame (RAW socket)
     + Work Counter (WKC)
 This is the complete EtherCAT packet format and parsing mechanism used by SOEM!
 
+# EtherCAT Datagram Commands in `ec_base.c`
+This file implements the base EtherCAT datagram primitives - all are blocking operations that wait for response or timeout.
+Addressing Modes
+| Mode | Description |
+|------|-------------|
+| Broadcast | All slaves on network |
+| Auto Increment | Each slave increments ADP; slave with 0 executes |
+| Configured | Specific slave by fixed position |
+| Logical | Memory-mapped addressing via FMMU |
+Command Summary
+1. Broadcast Commands
+- ecx_BRD() - Broadcast Read: Read from all slaves simultaneously
+- ecx_BWR() - Broadcast Write: Write to all slaves simultaneously
+2. Auto Increment Commands (position-based, slaves increment counter)
+- ecx_APRD() - Read from first slave (ADP=0)
+- ecx_APWR() - Write to first slave (ADP=0)
+- ecx_ARMW() - Read from ADP=0, Write to subsequent slaves
+3. Configured Address Commands (fixed slave position)
+- ecx_FPRD() - Fixed Read from specific slave
+- ecx_FPWR() - Fixed Write to specific slave
+- ecx_FRMW() - Fixed Read + Multiple Write to following slaves
+4. Logical Address Commands (FMMU-mapped)
+- ecx_LRD() - Logical Read
+- ecx_LWR() - Logical Write
+- ecx_LRW() - Logical Read/Write (bidirectional)
+- ecx_LRWDC() - LRW + Distributed Clock sync
+5. Word-Size Convenience Functions
+- ecx_APRDw(), ecx_APWRw(), ecx_FPRDw(), ecx_FPWRw() - single 16-bit operations
+Internal Helpers
+- ecx_writedatagramdata() - writes/zeroes data based on command type
+- ecx_setupdatagram() - creates first datagram in Ethernet frame
+- ecx_adddatagram() - appends additional datagrams to existing frame
+EtherCAT Frame Structure
+[Ethernet Header][EtherCAT Header][Command][ADP][ADO][Length][Data][WKC]
+- Command byte specifies operation type
+- ADP/ADO form the addressing scheme
+- WKC (Work Counter) tracks successful slave responses
+Return Value
+All functions return Work Counter (number of slaves that responded) or EC_NOFRAME (-1) on timeout.
+
 # netrwork related
 NIC driver port layer

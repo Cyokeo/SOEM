@@ -27,10 +27,14 @@ extern "C" {
 #define OSAL_PACKED_END
 #endif
 
+#define ec_timet            struct timespec
+
 #include <pthread.h>
 #define OSAL_THREAD_HANDLE  pthread_t *
 #define OSAL_THREAD_FUNC    void
 #define OSAL_THREAD_FUNC_RT void
+
+#define osal_mutext         pthread_mutex_t
 
 #ifdef __cplusplus
 }
